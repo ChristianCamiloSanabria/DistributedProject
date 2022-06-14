@@ -1,0 +1,47 @@
+/**Este documento sera una guia de tutorial para ir realizando el proyecto.**/
+
+Primeros pasos:
+
+1) Este proyecto dependera de una base de datos hecha en MongoDB
+	a) instalar mongo DB
+	b) documentar se sobre las consolas de mongo
+	c) Deberan aprender que nuestro proyecto tiene que tener la consola >>mongoD<< esperando peticiones en el puerto >>27017<<
+<<!!: Notas Rapidas sobre MongoDB: 
+	a) Como caracteristica particular de esta base de datos, en el momento de interactuar nuestro servidor con mongoDB 
+	    al hacer peticiones o enviar información, si esta no esta creada, MongoDB la crea automaticamente.
+	b) MongoDB nos pedira un esquema o formato en como le tenemos que enviar los datos desde nuestro servidor, esta configuracion o esquema estara
+	    en la carpeta "src/schema" dentro de nuestro proyecto en !! NodeJS ¡¡
+	c) Si queremos establecer un esquema como una "tarea" en nuestra tabla "TAREAS" en mongoDB diriamos: 
+		Dentro de nuestro proyecto NodeJS (Usando el modulo de mongoose) en un archivo ".js" 
+		El Archivo se guardara como = src//schema/task.js y pondremos dentro de el archivo la siguiente instruccion aprovechando el 
+		modulo mongoose instalado previamente en nuestro proyecto.
+
+		import mongoose from "mongoose";
+		const Schema = mongoose.Schema;
+
+		const TaskSchema = new Schema({
+			title: String,
+			description: String,
+			status : {
+			      tipo: Boolean,
+			      default: false
+			}
+		});
+
+		export default mongoose.model('task',TaskSchema);
+
+Por eso es bueno ir aprendiendo sobre los modulos en NodeJS.
+
+2) Este proyecto dependera de un servidor lanzado en NodeJS.
+	a) intalar NodeJS
+	b) Documentar se sobre el funcionamiento de los modulos en NodeJS
+	c) Aprender sobre el encapsulamiento de objetos, import y export  para crear nuevos modulos para aprovechar la programacion orientada a objetos en js
+
+
+
+3) Este proyecto se le realizara un seguimiento con la herramienta git y gitHub.
+	a) Super importante para este tipo de proyectos en NodeJS, nunca hacer actualizacion a la carpeta "node_modules" que esta en sus respetivos computarores.
+	b) Siempre hacer commit unicamente en sus respectivas ramas de asignacion.
+	c) Documentacion Exhaustiva a los metodos y servicios que programen.
+	d) 
+	
