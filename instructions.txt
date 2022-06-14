@@ -58,5 +58,7 @@ Por eso es bueno ir aprendiendo sobre los modulos en NodeJS.
 		* branch linea_three			
 	f) Se tendra una rama release branches (Ramas de Publicación) "Publication" para determinar que ya se pueden hacer los respectivos merge a la master.
 
+5) Clone el proyecto y despues haga push en su linea de branch asignada.
+
 
 	
