@@ -60,5 +60,11 @@ Por eso es bueno ir aprendiendo sobre los modulos en NodeJS.
 
 5) Clone el proyecto y despues haga push en su linea de branch asignada.
 
+6) Como empezar
+	a) Primero inicie la consola de mongod que debe estar en los archivos de MONGO DB en la carpeta bin.
+	b) Con la consola cmd ubique la carpeta del proyecto.
+	c) Estando en la consola en la carpeta del proyecto utilice: npm run dev
+	d) Al iniciar el servidor de NodeJS en el puesto establecido en localHost:4000 podra ver en el navegador la respuesta del resvidor en la url "/".
+
 
 	
