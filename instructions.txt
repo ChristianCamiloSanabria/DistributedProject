@@ -53,9 +53,9 @@ Por eso es bueno ir aprendiendo sobre los modulos en NodeJS.
 	c) Se tendra una rama (branch) hotfixes para hacer arreglos importantes de errores o imprevistos de ultimo momento.
 	d) Se tendra una rama (branch) develop como principal para unificar a todos los desarrolladores donde los supervisores realizaran merge .
 	e) Se tendra unas ramas secundarias feature branches asignadas para el desarrollo realizado por el equipo de trabajo.
-		* branch linea_1
-		* branch linea_2
-		* branch linea_3			
+		* branch linea_one
+		* branch linea_two
+		* branch linea_three			
 	f) Se tendra una rama release branches (Ramas de Publicación) "Publication" para determinar que ya se pueden hacer los respectivos merge a la master.
 
 
