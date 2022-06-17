@@ -18,7 +18,7 @@ router.get("/cuenta/:idcuenta/:idPersona",(req,res)=>{
 //Metodos GET
 
 /**
-	
+	xde
 **/
 router.get('/',async (req, res) => {
 	//Aqui estoy recogiendo los datos del servidor
