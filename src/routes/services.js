@@ -24,8 +24,9 @@ router.get("/students/:id_student", async (req, res) => {
     const tasks_db = await Student.find({"id_student": va});
     console.log(tasks_db);
     res.send("Estudiante: " + req.params.id_student);
-
 });
+
+router.put("/")
 
 
 //Metodos GET
