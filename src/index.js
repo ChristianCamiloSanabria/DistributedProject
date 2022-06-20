@@ -11,11 +11,11 @@ const expressApp = createExpressServer();
 
 //connecting to db
 mongoose.connect('mongodb://localhost/crud-mongo')
-	.then(db=> console.log('Db connected'))
-	.catch(err=> console.log('err'));
+    .then(db => console.log('Db connected'))
+    .catch(err => console.log('err'));
 
 //routes
-expressApp.use('/',router);
+expressApp.use('/', router);
 
 
 //settings
@@ -28,8 +28,8 @@ expressApp.set('views', path.join('.', 'views'));
 expressApp.use(morgan('dev'));
 expressApp.use(createExpressServer.urlencoded({extended: false}));
 
-expressApp.listen(expressApp.get('port'),()=>{
-	 console.log(`Server on port ${expressApp.get('port')}`); 
+expressApp.listen(expressApp.get('port'), () => {
+    console.log(`Server on port ${expressApp.get('port')}`);
 });
 
 
