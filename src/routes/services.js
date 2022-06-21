@@ -1,27 +1,10 @@
-import Task from "../schema/task.js";
-import index from "../views/index_html.js";
+const router = express.Router();
 import express from "express";
+
 import Student from "../schema/student.js";
 import Subject from "../schema/subject.js";
 import Inscription from "../schema/inscription.js";
 
-const router = express.Router();
-
-
-
-router.get("/cuenta/:idcuenta/:idPersona",(req,res)=>{
-	console.log(req.params);
-	console.log(req.params.idcuenta);
-	console.log(req.params.idPersona);
-	res.send("Tu cuenta personal");
-});
-
-
-//Metodos GET
-
-/**
-	
-**/
 router.get('/',async (req, res) => {
 	//Aqui estoy recogiendo los datos del servidor
 	const tasks_db = await Task.find();
@@ -37,32 +20,9 @@ router.get('/',async (req, res) => {
 
 
 
-/**
-** GET
-**
-**/
-router.get("/show/last_saved_student",async (req, res) => {
-	const listStudent = await Student.find();
-	var lastStudent ="";
-	listStudent.forEach(function(element) {
-		lastStudent = element;
-		console.log(lastStudent);
-	});
-
-	res.status(200).send("GET:lastStudent:"+lastStudent);
-});
 
 
-router.get("/show/list_student",async (req, res) => {
-	const listStudent = await Student.find();
-	var students ="";
-	listStudent.forEach(function(element) {
-		students += element;
-		console.log(students);
-	});
 
-	res.status(200).send("GET::"+students);
-});
 
 
 //--------------------------POST---------------------------------- //
