@@ -20,9 +20,12 @@ router.get("/cuenta/:idcuenta/:idPersona", (req, res) => {
  URL vacia
  **/
 router.get('/', async (req, res) => {
-    const tasks_db = await Task.find();
-    console.log(tasks_db);
-    res.send("Hola");
+    const students = await Student.find();
+    const subjects = await Subject.find();
+    const inscriptions = await Inscription.find();
+    res.send("Students:" + students);
+    res.send("subjects" + subjects);
+    res.send("inscriptions" + inscriptions);
 });
 
 /**
@@ -39,6 +42,40 @@ router.get("/show/last_saved_student", async (req, res) => {
     });
 
     res.status(200).send("GET:lastStudent:" + lastStudent);
+});
+
+/***
+ * Get Student
+ */
+router.get('/getStudent/:id_student', async (req, res) => {
+    const students = await Student.find();
+    let student = null;
+    students.forEach(function (element) {
+        if (req.params.id_student == element.id_student) {
+            student = element.toString();
+            res.status(200).send("Get Student" + student);
+        }
+    });
+    if (student == null) {
+        res.status(404).send("Estudiante no encontrado :(");
+    }
+});
+
+/***
+ * Get Inscription
+ */
+router.get('/getInscription/:id_inscription', async (req, res) => {
+    const inscriptions = await Inscription.find();
+    let inscription = null;
+    inscriptions.forEach(function (element) {
+        if (req.params.id_inscription == element.id_inscription) {
+            inscription = element.toString();
+            res.status(200).send("Get Inscription" + inscription);
+        }
+    });
+    if (inscription == null) {
+        res.status(404).send("No se encuentra inscripcion :(");
+    }
 });
 
 
@@ -119,7 +156,7 @@ router.put('put/:id_student/:number_document/:type_document/:name_student/:lastn
 router.put('put/:id_inscription/:id_student/:id_subject', async (req, res) => {
     try {
         const listInscriptions = await Inscription.find();
-        let id_inscription = req.params.id_inscription();
+        let id_inscription = req.params.id_inscription;
         listInscriptions.forEach(function (element) {
             if (element.id_inscription == id_inscription) {
                 element.id_student = Number(req.params.id_student);
