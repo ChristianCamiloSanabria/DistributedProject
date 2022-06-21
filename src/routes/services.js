@@ -1,11 +1,11 @@
-import Task from "../schema/task.js";
-import index from "../views/index_html.js";
 import express from "express";
+const router = express.Router();
+
 import Student from "../schema/student.js";
 import Subject from "../schema/subject.js";
+import Inscription from "../schema/inscription.js";
 
 
-const router = express.Router();
 
 
 router.get("/cuenta/:idcuenta/:idPersona", (req, res) => {
@@ -14,7 +14,7 @@ router.get("/cuenta/:idcuenta/:idPersona", (req, res) => {
     console.log(req.params.idPersona);
     res.send("Tu cuenta personal");
 });
-
+//-----------------------------------
 /*
  * Get Subject
  */
@@ -64,6 +64,8 @@ router.patch("/patch/:id_subject/:status" ,async (req, res) =>{
     }
 });
 
+//-----------------------------END
+
 /**
  ** GET
  **
@@ -85,18 +87,5 @@ router.get("/show/last_saved_student", async (req, res) => {
  **
  **/
 
-router.post("/add/:id_student/:number_document/:name_student/:type_document/:lastname_student/:code_student", async (req, res) => {
-    console.log(req.params);
-    const student = new Student({
-        "id_student": req.params.id_student,
-        "number_document": req.params.number_document,
-        "type_document": '"' + req.params.type_document + '"',
-        "name_student": '"' + req.params.name_student + '"',
-        "lastname_student": '"' + req.params.lastname_student + '"',
-        "code_student": req.params.code_student,
-        "status": "true"
-    });
-    console.log(student);
-    res.status(200).send("Post: Saved Student" + await student.save());
-});
+
 export default router;
