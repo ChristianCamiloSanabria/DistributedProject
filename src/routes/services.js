@@ -1,6 +1,8 @@
 import Task from "../schema/task.js";
 import express from "express";
 import Student from "../schema/student.js";
+import Subject from "../schema/subject.js";
+import Inscription from "../schema/inscription.js";
 
 
 const router = express.Router();
@@ -14,14 +16,13 @@ router.get("/cuenta/:idcuenta/:idPersona", (req, res) => {
 });
 
 
-
 /**
  URL vacia
  **/
 router.get('/', async (req, res) => {
     const tasks_db = await Task.find();
     console.log(tasks_db);
-        res.send("Hola");
+    res.send("Hola");
 });
 
 /**
@@ -68,39 +69,68 @@ router.post("/addStudent/:id_student/:number_document/:name_student/:type_docume
 
 
 /***
+ * PUT Materia
+ */
+router.put('put/:id_subject/:name_Subject/:code_subject/:quotes/:status', async (req, res) => {
+    try {
+        const listSubjects = await Subject.find();
+        let id_subject = Number(req.params.id_subject);
+        listSubjects.forEach(function (element) {
+            if (element.id_subject == id_subject) {
+                element.name_subject = req.params.name_subject;
+                element.code_subject = Number(req.params.code_subject);
+                element.quota = Number(req.params.quotes);
+                element.status = Boolean(req.params.status);
+                console.log(element.toString());
+            }
+        });
+    } catch (error) {
+        res.status(400).send("Bad request!");
+    }
+    res.status(201).send("Put: Update Subject");
+});
+
+/***
  * PUT Estudiante
  */
 router.put('put/:id_student/:number_document/:type_document/:name_student/:lastname_student/:code_student', async (req, res) => {
     try {
-        const id = Number(req.params.id_student);
-        const number_document = Number(req.params.number_document);
-        const type_document = req.params.type_document;
-        const name_student = req.params.name_student;
-        const lastname_student = req.params.lastname_student;
-        const code_student = req.params.code_student;
-        let response = await db
+        const listStudent = await Student.find();
+        let id_student = req.params.id_student;
+        listStudent.forEach(function (element) {
+            if (element.id_student == id_student) {
+                element.number_document = Number(req.params.number_document);
+                element.type_document = req.params.type_document;
+                element.name_student = req.params.name_student;
+                element.lastname_student = req.params.lastname_student;
+                element.code_student = req.params.code_student;
+                console.log(element.toString());
+            }
+        });
     } catch (error) {
-        res.send(error);
+        res.status(400).send("Bad request!");
     }
-
+    res.status(201).send("Put: Update Student");
 });
 
 /***
- * PUT materia
+ * PUT Inscripcion
  */
-router.put('put/:id_student/:number_document/:type_document/:name_student/:lastname_student/:code_student', async (req, res) => {
+router.put('put/:id_inscription/:id_student/:id_subject', async (req, res) => {
     try {
-        const id = Number(req.params.id_student);
-        const number_document = Number(req.params.number_document);
-        const type_document = req.params.type_document;
-        const name_student = req.params.name_student;
-        const lastname_student = req.params.lastname_student;
-        const code_student = req.params.code_student;
-        let response = await db
+        const listInscriptions = await Inscription.find();
+        let id_inscription = req.params.id_inscription();
+        listInscriptions.forEach(function (element) {
+            if (element.id_inscription == id_inscription) {
+                element.id_student = Number(req.params.id_student);
+                element.id_subject = req.params.id_subject;
+                console.log(element.toString());
+            }
+        });
     } catch (error) {
-        res.send(error);
+        res.status(400).send("Bad request!");
     }
-
+    res.status(201).send("Put: Update Inscription");
 });
 
 export default router;
