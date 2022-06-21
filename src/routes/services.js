@@ -31,7 +31,13 @@ router.get('/getSubject/:id_subject', async (req, res) => {
         res.status(404).send("No se encuentra materia :(");
     }
 });
+/***
+ * Servicios PATCH
+ */
 
+/***
+ * Patch Student
+ */
 router.patch("/patch/:idStudent/:status" ,async (req, res) =>{
     try {
         const listStudents = await Student.find();
@@ -47,7 +53,9 @@ router.patch("/patch/:idStudent/:status" ,async (req, res) =>{
 
     }
 });
-
+/***
+ * Patch Subject
+ */
 router.patch("/patch/:id_subject/:status" ,async (req, res) =>{
     try {
         const listSubject = await Subject.find();
@@ -64,7 +72,7 @@ router.patch("/patch/:id_subject/:status" ,async (req, res) =>{
     }
 });
 
-//-----------------------------END
+//-----------------------------END PATCH ------------------------
 
 /**
  ** GET
