@@ -2,6 +2,7 @@ import Task from "../schema/task.js";
 import index from "../views/index_html.js";
 import express from "express";
 import Student from "../schema/student.js";
+import Subject from "../schema/subject.js";
 
 const router = express.Router();
 
@@ -24,19 +25,7 @@ router.get('/',async (req, res) => {
 	//Aqui estoy recogiendo los datos del servidor
 	const tasks_db = await Task.find();
 	console.log(tasks_db);
-	/*Aqui es donde se le pasa dos parametros al navegador 
-		Primer_Parametro: index que viene el html
-		Segundo_Parametro: El objeto .JSON que viene por tasks_db
-	
-	res.render("index",{
-		tasks: tasks_db
-	}); 
-	*/
-	//res.send('Hollo world!');
-	//console.log(index);
-	//res.send(index);
 	res.send("Hola");
-
 });
 
 
@@ -75,13 +64,13 @@ router.get("/show/list_student",async (req, res) => {
 });
 
 
- 
+//--------------------------POST---------------------------------- //
 /**
-** POST
+** POST "/add/student/:id_student/:number_document/:type_document/:name_student/:lastname_student/:code_student"
 ** Servicio de insertar a la DB un estudiante. 
 **/
 
-router.post("/add/:id_student/:number_document/:type_document/:name_student/:lastname_student/:code_student",async (req, res) => {
+router.post("/add/student/:id_student/:number_document/:type_document/:name_student/:lastname_student/:code_student",async (req, res) => {
 	try{
 		console.log("Aqui llegan los parametros"+req.params);
 		const listStudent = await Student.find();
@@ -91,7 +80,7 @@ router.post("/add/:id_student/:number_document/:type_document/:name_student/:las
 			console.log("Aqui se crea el estudiante:"+student);
 			res.status(200).send("Post: Saved Student"+ await student.save());	
 		}else{
-			res.status(200).send("El estudiante ya se encuantra registrado");
+			res.status(200).send("El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado");
 		}
 	} catch(err){
       console.error(err); //mostramos el error por consola para poder solucionar futuros errores
@@ -110,7 +99,48 @@ router.post("/add/:id_student/:number_document/:type_document/:name_student/:las
 function checkStudent(student,listStudent){
 	let bolean= true;
 	listStudent.forEach(function(element) {
-		if (element.name_student==student.name_student&&element.lastname_student==student.lastname_student) {
+		if (element.name_student==student.name_student&&element.lastname_student==student.lastname_student||element.code_student==student.code_student) {
+			bolean = false;
+		}
+	});
+	return bolean;
+}
+
+
+/**
+** POST "/add/subject/:id_subject/:name_subject/:code_subject/:quotas/:status"
+** Servicio de insertar a la DB una Materia. 
+**/
+
+router.post("/add/subject/:id_subject/:name_subject/:code_subject/:quotas/:status",async (req, res) => {
+	try{
+		console.log("Aqui llegan los parametros"+req.params);
+		const listSubject = await Subject.find();
+		if(checkSubject(req.params,listSubject)){
+			const subject = new Subject(req.params);
+			console.log("Aqui se crea la Materia:"+subject);
+			res.status(200).send("Post: Saved Subject"+ await subject.save());	
+		}else{
+			res.status(200).send("La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado");
+		}
+	} catch(err){
+      console.error(err); //mostramos el error por consola para poder solucionar futuros errores
+      res.status(500).send("error"); //en caso de error respondemos al cliente con un 500
+    }
+});
+
+/**
+** function checkSubject:
+** Verifica si una Materia ya se encuentra registrada en la base de datos.
+** Return: un boleano que confirma si la Materia se encuentra o no.
+** Parametros de entrada: 
+	subject: Representa los datos de la Materia que se quiere insertar en la DB,
+	listSubject: Listado de todos lo Materias actuales en la DB.
+**/
+function checkSubject(subject,listSubject){
+	let bolean= true;
+	listSubject.forEach(function(element) {
+		if (element.name_subject==subject.name_subject||element.code_subject==subject.code_subject) {
 			bolean = false;
 		}
 	});
