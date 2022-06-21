@@ -1,25 +1,16 @@
-import Task from "../schema/task.js";
 import express from "express";
+const router = express.Router();
+
 import Student from "../schema/student.js";
 import Subject from "../schema/subject.js";
 import Inscription from "../schema/inscription.js";
 
 
-const router = express.Router();
-
-
-router.get("/cuenta/:idcuenta/:idPersona", (req, res) => {
-    console.log(req.params);
-    console.log(req.params.idcuenta);
-    console.log(req.params.idPersona);
-    res.send("Tu cuenta personal");
-});
-
 
 /**
- URL vacia
+ Get para mostrar las tres colecciones (Estudiantes, Materias e Inscripciones)
  **/
-router.get('/', async (req, res) => {
+router.get('/showData', async (req, res) => {
     const students = await Student.find();
     const subjects = await Subject.find();
     const inscriptions = await Inscription.find();
@@ -77,33 +68,14 @@ router.get('/getInscription/:id_inscription', async (req, res) => {
         res.status(404).send("No se encuentra inscripcion :(");
     }
 });
-
-
-/**
- ** POST
- **
- **/
-
-router.post("/addStudent/:id_student/:number_document/:name_student/:type_document/:lastname_student/:code_student", async (req, res) => {
-    console.log(req.params);
-    const student = new Student({
-        "id_student": req.params.id_student,
-        "number_document": req.params.number_document,
-        "type_document": '"' + req.params.type_document + '"',
-        "name_student": '"' + req.params.name_student + '"',
-        "lastname_student": '"' + req.params.lastname_student + '"',
-        "code_student": req.params.code_student,
-        "status": "true"
-    });
-    console.log(student);
-    res.status(200).send("Post: Saved Student" + await student.save());
-});
+/***
+ * ------------------------------------- END GET ------------------------------
+ */
 
 
 /***
  * Metodos PUT
  */
-
 
 /***
  * PUT Materia
@@ -169,5 +141,9 @@ router.put('put/:id_inscription/:id_student/:id_subject', async (req, res) => {
     }
     res.status(201).send("Put: Update Inscription");
 });
+
+/***
+ * ---------------------------------------- END PUTS------------------------------------------
+ */
 
 export default router;
