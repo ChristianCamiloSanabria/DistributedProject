@@ -24,7 +24,12 @@ expressApp.set('views', path.join('.', 'views'));
 //app.set('view engine', 'ejs'); 
 
 
+<<<<<<< HEAD
 //middlewares
+=======
+
+//middlewares de express
+>>>>>>> line_three
 expressApp.use(morgan('dev'));
 expressApp.use(createExpressServer.urlencoded({extended: false}));
 

@@ -2,7 +2,11 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
+<<<<<<< HEAD
 const StudentSchema = new Schema({
+=======
+const StudentScheme = new Schema({
+>>>>>>> line_three
     id_student: Number,
     number_document: Number,
     type_document: String,
@@ -15,4 +19,8 @@ const StudentSchema = new Schema({
     }
 });
 
+<<<<<<< HEAD
 export default mongoose.model('student', StudentSchema);
+=======
+export default mongoose.model('student', StudentScheme);
+>>>>>>> line_three
