@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const StudentSchema = new Schema({
+const StudentScheme = new Schema({
     id_student: Number,
     number_document: Number,
     type_document: String,
