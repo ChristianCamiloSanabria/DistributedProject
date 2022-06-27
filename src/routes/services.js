@@ -1,10 +1,10 @@
 import express from "express";
+
 const router = express.Router();
 
 import Student from "../schema/student.js";
 import Subject from "../schema/subject.js";
 import Inscription from "../schema/inscription.js";
-
 
 
 /**
