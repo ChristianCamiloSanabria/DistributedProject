@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c52b65b6-5ba6-4375-be1b-29a3b4dc6602" name="Changes" comment="limpieza linea desarrollo" />
+    <list default="true" id="c52b65b6-5ba6-4375-be1b-29a3b4dc6602" name="Changes" comment="limpieza linea desarrollo">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/services.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/services.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema/student.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/student.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -81,6 +85,9 @@
       <workItem from="1655649623166" duration="3604000" />
       <workItem from="1655747010730" duration="11461000" />
       <workItem from="1655824065203" duration="3478000" />
+      <workItem from="1656281400247" duration="1052000" />
+      <workItem from="1656283383353" duration="13698000" />
+      <workItem from="1656344818159" duration="1672000" />
     </task>
     <task id="LOCAL-00001" summary="Prueba para comprobar primer commit">
       <created>1655341007616</created>

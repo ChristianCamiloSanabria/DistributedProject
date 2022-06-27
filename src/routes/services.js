@@ -18,7 +18,7 @@ router.get('/showData', async (req, res) => {
     res.send("Students:" + students);
     res.send("subjects" + subjects);
     res.send("inscriptions" + inscriptions);
-
+});
 router.get('/',async (req, res) => {
 	//Aqui estoy recogiendo los datos del servidor
 	const tasks_db = await Task.find();
@@ -91,7 +91,7 @@ router.get('/getSubject/:id_subject', async (req, res) => {
         }
     });
     if (subject == null) {
-        res.status(404).send("No se encuentra materia :(");
+        res.status(404).send("No se encontro materia :(");
     }
 });
 
@@ -191,12 +191,12 @@ router.patch("/patch/:idStudent/:status" ,async (req, res) =>{
         {
             if (element.id_student == idStudent){
                 element.status = req.params.status;
-                res.status(200).send("staus changed")
             }
         });
     }catch (error){
-
+        res.status(400).send("Bad Request")
     }
+    res.status(204).send("status changed")
 });
 /***
  * Patch Subject
@@ -381,7 +381,7 @@ function checkInscription(inscription,listInscription){
 ** function isStudent:
 ** Verifica si un Estudiante si existe en la base de datos.
 ** Return: un boleano que confirma si la Estudiante  existe.
-** Parametros de entrada: 
+** Parametros de entrada:
 	inscription: Representa los datos de la Estudiante que se quiere insertar en la DB,
 	listStudent: Listado de todas las Materias actuales en la DB.
 **/
