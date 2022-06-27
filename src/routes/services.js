@@ -18,6 +18,7 @@ router.get('/showData', async (req, res) => {
     res.send("subjects" + subjects);
     res.send("inscriptions" + inscriptions);
 });
+
 router.get('/', async (req, res) => {
     //Aqui estoy recogiendo los datos del servidor
     const tasks_db = await Task.find();
@@ -49,14 +50,23 @@ router.get('/getStudent/', async (req, res) => {
     console.log(req.body);
     const students = await Student.find();
     let student = null;
+    const idStudent = req.body.id_student;
     students.forEach(function (element) {
-        if (req.body.id_student == element.id_student) {
+        if (idStudent == element.id_student) {
             student = element.toString();
-            res.status(200).send("Get Student" + student);
+            res.status(200).json({
+                code: 200,
+                message: 'Estudiante encontrado',
+                details: 'Estudiante: ' + student
+            });
         }
     });
     if (student == null) {
-        res.status(404).send("Estudiante no encontrado :(");
+        res.status(404).json({
+            code: 404,
+            message: 'No se encuentra el estudiante',
+            details: 'El estudiante con el codigo: ' + idStudent + ' no se encuentra en la base de datos'
+        });
     }
 });
 
@@ -66,16 +76,24 @@ router.get('/getStudent/', async (req, res) => {
 router.get('/getInscription/', async (req, res) => {
     const inscriptions = await Inscription.find();
     let inscription = null;
-    console.log(req.body.id_inscription);
+    const idInscription = req.body.id_inscription;
     inscriptions.forEach(function (element) {
-        if (req.body.id_inscription == element.id_inscription) {
+        if (idInscription == element.id_inscription) {
             inscription = element.toString();
-            res.status(200).send("Get Inscription" + inscription);
+            res.status(200).json({
+                code: 200,
+                message: 'Inscripcion encontrada' + idInscription,
+                details: 'Incripcion: ' + element
+            });
         }
     });
-    if (inscription == null) {
-        res.status(404).send("No se encuentra inscripcion :(");
-    }
+    if (inscription == null)
+        res.status(404).json({
+            code: 404,
+            message: 'No se encuentra la inscripcion',
+            details: 'La inscripcion: ' + idInscription + ' no se encuentra en la base de datos'
+        });
+
 });
 
 
@@ -88,7 +106,11 @@ router.get('/getSubject/', async (req, res) => {
     subjects.forEach(function (element) {
         if (req.body.params.id_subject == element.id_subject) {
             subject = element.toString();
-            res.status(200).send("Get subject" + subject);
+            res.status(200).json({
+                code: 200,
+                message: 'Materia encontrada',
+                details: 'Materia encontrada: ' + element
+            })
         }
     });
     if (subject == null) {
@@ -108,63 +130,89 @@ router.get('/getSubject/', async (req, res) => {
 
 /***
  * PUT Materia
- *
- * Toca buscar por NUMERO DE DOCUMENTO + TIPO DE DOCUMENTO
+ *  Actualiza los datos de una materia, a excepcion del ID
  */
-router.put('/put/:id_subject/:name_Subject/:code_subject/:quotes/:status', async (req, res) => {
+router.put('/put/subject/', async (req, res) => {
     try {
         const listSubjects = await Subject.find();
-        let id_subject = Number(req.params.id_subject);
+        let paramForSearch = Number(req.body.id_subject);
         let newSubject = null;
         listSubjects.forEach(function (element) {
-            if (element.id_subject == id_subject) {
-                element.name_subject = req.params.name_subject;
-                element.code_subject = Number(req.params.code_subject);
-                element.quota = Number(req.params.quotes);
-                element.status = Boolean(req.params.status);
+            if (element.id_subject == paramForSearch) {
+                element.name_subject = req.body.name_subject;
+                element.code_subject = req.body.code_subject;
+                element.quota = req.body.quotes;
+                element.status = req.body.status;
                 console.log(element.toString());
-                res.status(201).send("Put: Update Subject");
                 newSubject = new Subject(element);
+                res.status(200).json({
+                    code: 200,
+                    message: 'Actualizacacion satisfactoria',
+                    details: 'Actualizacion: ' + newSubject.toString()
+                });
             }
         });
-        if (newSubject == null) {
-            res.status(404).send("No se encuentra materia");
-        } else {
+        if (newSubject == null)
+            res.status(404).json({
+                code: 404,
+                message: 'No se encontro materia',
+                details: 'La materia con codigo: ' + paramForSearch + ' no se encuentra en la base de datos'
+            });
+        else
             await newSubject.save();
-        }
+
     } catch (error) {
-        //crear JSON para la respuesta
-        res.status(400).send("Bad request!");
+        res.status(400).json({
+            code: 400,
+            message: 'No se puede tramitar la solicitud',
+            details: error.toString()
+        });
     }
 
 });
 
 /***
  * PUT Estudiante
+ *
+ * Buscar el estudiante por numero de identificacion + tipo de documento
+ *
  */
-router.put('/put/:id_student/:number_document/:type_document/:name_student/:lastname_student/:code_student', async (req, res) => {
+router.put('/put/student/', async (req, res) => {
     try {
         const listStudent = await Student.find();
-        let id_student = req.params.id_student;
         let newStudent = null;
+        let paramForSearch = req.body.number_document + req.body.type_document;
         listStudent.forEach(function (element) {
-            if (element.id_student == id_student) {
-                element.number_document = Number(req.params.number_document);
-                element.type_document = req.params.type_document;
-                element.name_student = req.params.name_student;
-                element.lastname_student = req.params.lastname_student;
-                element.code_student = req.params.code_student;
-                console.log(element.toString());
+            if ((element.number_document + element.type_document) == (paramForSearch)) {
+                element.number_document = req.body.number_document;
+                element.type_document = req.body.type_document;
+                element.name_student = req.body.name_student;
+                element.lastname_student = req.body.lastname_student;
+                element.code_student = req.body.code_student;
                 newStudent = new Student(element);
-                res.status(201).send("Put: Update Student");
+                res.status(200).json({
+                    code: 200,
+                    message: "Estudiante actualizado correctamente",
+                    details: 'Estudiante actualizado ' + newStudent
+
+                });
             }
         });
-        await newStudent.save();
-        if (newStudent == null) {
-            res.status(404).send("No se encuentra estudiante :(");
-        }
+        if (newStudent == null)
+            res.status(404).json({
+                code: 404,
+                message: 'No se encontro al estudiante',
+                details: 'El estudiante con el codigo ' + paramForSearch + ' no se encuentra en la base de datos'
+            });
+        else
+            await newStudent.save();
     } catch (error) {
-        res.status(400).send("Bad request!");
+        console.log(error.toString());
+        res.status(400).json({
+            code: 400,
+            message: 'No se puede tramitar la solicitud',
+            details: error.toString()
+        });
     }
 
 });
@@ -172,21 +220,42 @@ router.put('/put/:id_student/:number_document/:type_document/:name_student/:last
 /***
  * PUT Inscripcion
  */
-router.put('put/:id_inscription/:id_student/:id_subject', async (req, res) => {
+router.put('put/inscription/', async (req, res) => {
     try {
         const listInscriptions = await Inscription.find();
-        let id_inscription = req.params.id_inscription;
+        let id_inscription = req.body.id_inscription;
+        let newInscription = null;
         listInscriptions.forEach(function (element) {
             if (element.id_inscription == id_inscription) {
-                element.id_student = Number(req.params.id_student);
-                element.id_subject = req.params.id_subject;
+                element.id_student = req.body.id_student;
+                element.id_subject = req.body.id_subject;
                 console.log(element.toString());
+                newInscription = new Inscription(element);
+                res.status(200).json({
+                    code: 200,
+                    message: 'Inscripcion actualizada correctamente',
+                    details: 'Inscripcion actualizada: ' + newInscription
+                });
             }
         });
+        if (newInscription == null) {
+            res.status(404).json({
+                code: 404,
+                message: 'No se encuentra la inscripcion',
+                details: 'La inscripcion: ' + id_inscription + ' no se encuentra en a base de datos'
+            });
+        } else {
+            await newInscription.save();
+        }
+
     } catch (error) {
-        res.status(400).send("Bad request!");
+        res.status(400).json({
+            code: 400,
+            message: 'Bad request',
+            details: 'Error en la consulta: ' + error.toString()
+        });
     }
-    res.status(201).send("Put: Update Inscription");
+
 });
 
 /***
@@ -409,21 +478,6 @@ function isStudent(inscription, listStudent) {
 }
 
 //--------------------------POST- END--------------------------------- //
-
-router.get('/getStudent', async (req, res) => {
-    const students = await Student.find();
-    let student = null;
-    students.forEach(function (element) {
-        console.log("---------------- Respueta del body: " + req.body);
-        if (req.body.id_student == element.id_student) {
-            student = element.toString();
-            res.status(200).send("Get Student" + student);
-        }
-    });
-    if (student == null) {
-        res.status(404).send("Estudiante no encontrado :(");
-    }
-});
 
 
 export default router;
