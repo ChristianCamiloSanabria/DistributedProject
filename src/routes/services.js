@@ -20,10 +20,9 @@ router.get('/showData', async (req, res) => {
 });
 
 
-
 router.get('/', async (req, res) => {
     //Aqui estoy recogiendo los datos del servidor
-    const tasks_db = await Task.find();
+    const tasks_db = await Student.find();
     console.log(tasks_db);
     res.send("Hola");
 
@@ -56,7 +55,11 @@ router.get('/getStudent/', async (req, res) => {
     students.forEach(function (element) {
         if (paramForSearch == (element.number_document + element.type_document)) {
             student = element.toString();
-            res.status(200).send("Get Student" + student);
+            res.status(200).json({
+                code: 200,
+                message: 'Estudiante encontrado',
+                details: 'Estudiante: ' + element
+            });
         }
     });
     if (student == null) {
@@ -74,9 +77,9 @@ router.get('/getStudent/', async (req, res) => {
 router.get('/getInscription/', async (req, res) => {
     const inscriptions = await Inscription.find();
     let inscription = null;
-    console.log(req.body.id_inscription);
+    let id_inscription = req.body.id_inscription;
     inscriptions.forEach(function (element) {
-        if (req.body.id_inscription == element.id_inscription) {
+        if (id_inscription == element.id_inscription) {
             inscription = element.toString();
             res.status(200).json({
                 code: 200,
@@ -89,7 +92,7 @@ router.get('/getInscription/', async (req, res) => {
         res.status(404).json({
             code: 404,
             message: 'No se encuentra la inscripcion',
-            details: 'La inscripcion: ' + idInscription + ' no se encuentra en la base de datos'
+            details: 'La inscripcion: ' + id_inscription + ' no se encuentra en la base de datos'
         });
 
 });
@@ -102,7 +105,7 @@ router.get('/getSubject/', async (req, res) => {
     const subjects = await Subject.find();
     let subject = null;
     subjects.forEach(function (element) {
-        if (req.body.params.id_subject == element.id_subject) {
+        if (req.body.id_subject == element.id_subject) {
             subject = element.toString();
             res.status(200).json({
                 code: 200,
@@ -112,7 +115,11 @@ router.get('/getSubject/', async (req, res) => {
         }
     });
     if (subject == null) {
-        res.status(404).send("No se encuentra materia :(");
+        res.status(404).json({
+            code: 200,
+            message: 'Materia encontrada',
+            details: 'Materia con el codigo ' + req.body.id_subject + ' no se encuentra'
+        });
     }
 });
 
@@ -139,10 +146,9 @@ router.put('/put/subject/', async (req, res) => {
             if (element.id_subject == paramForSearch) {
                 element.name_subject = req.body.name_subject;
                 element.code_subject = req.body.code_subject;
-                element.quota = req.body.quotes;
+                element.quotas = req.body.quotas;
                 element.status = req.body.status;
                 console.log(element.toString());
-                res.status(201).send("Put: Update Subject");
                 newSubject = new Subject(element);
                 res.status(200).json({
                     code: 200,
@@ -179,15 +185,15 @@ router.put('/put/subject/', async (req, res) => {
 router.put('/put/student/', async (req, res) => {
     try {
         const listStudent = await Student.find();
-        let id_student = req.params.id_student;
         let newStudent = null;
         let paramForSearch = req.body.number_document + req.body.type_document;
         listStudent.forEach(function (element) {
             if ((element.number_document + element.type_document) == (paramForSearch)) {
-                element.type_document = req.body.type_document;
+                element.type_document = req.body.new_type_document;
                 element.name_student = req.body.name_student;
                 element.lastname_student = req.body.lastname_student;
                 element.code_student = req.body.code_student;
+                element.status = {tipo: req.body.status}
                 newStudent = new Student(element);
                 res.status(200).json({
                     code: 200,
@@ -218,7 +224,7 @@ router.put('/put/student/', async (req, res) => {
 /***
  * PUT Inscripcion
  */
-router.put('put/inscription/', async (req, res) => {
+router.put('/put/inscription/', async (req, res) => {
     try {
         const listInscriptions = await Inscription.find();
         let id_inscription = req.body.id_inscription;
@@ -240,11 +246,10 @@ router.put('put/inscription/', async (req, res) => {
             res.status(404).json({
                 code: 404,
                 message: 'No se encuentra la inscripcion',
-                details: 'La inscripcion: ' + id_inscription + ' no se encuentra en a base de datos'
+                details: 'La inscripcion: ' + id_inscription + ' no se encuentra en la base de datos'
             });
-        } else {
+        } else
             await newInscription.save();
-        }
 
     } catch (error) {
         res.status(400).json({
@@ -253,7 +258,6 @@ router.put('put/inscription/', async (req, res) => {
             details: 'Error en la consulta: ' + error.toString()
         });
     }
-    res.status(201).send("Put: Update Inscription");
 });
 
 /***
@@ -372,26 +376,26 @@ router.post("/add/student/:id_student/:number_document/:type_document/:name_stud
             //const student = new Student({"id_student": infoServicio.id_student,"number_document": infoServicio.number_document,"type_document": '"'+infoServicio.type_document+'"',"name_student": '"'+infoServicio.name_student+'"',"lastname_student": '"'+infoServicio.lastname_student+'"',"code_student": infoServicio.code_student,"status": "true"});
             const student = new Student(infoServicio);
             console.log("Aqui se crea el estudiante:" + student);
-             res.status(200).json({
-                    code: 200,
-                    message: 'Saved Student' + await student.save(),
-                    details: 'Estudiante registrado: ' + infoServicio
-                });
+            res.status(200).json({
+                code: 200,
+                message: 'Saved Student' + await student.save(),
+                details: 'Estudiante registrado: ' + infoServicio
+            });
         } else {
             res.status(409).json({
-                    code: 409,
-                    message: 'El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado',
-                    details: 'Estudiante posiblemente esta registrado: ' + infoServicio
-                });
+                code: 409,
+                message: 'El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado',
+                details: 'Estudiante posiblemente esta registrado: ' + infoServicio
+            });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
         res.status(500).send("error"); //en caso de error respondemos al cliente con un 500
-         res.status(500).json({
-                    code: 500,
-                    message: 'error',
-                    details: 'error Servidor no disponible '
-                });
+        res.status(500).json({
+            code: 500,
+            message: 'error',
+            details: 'error Servidor no disponible '
+        });
     }
 });
 /**
@@ -408,27 +412,28 @@ router.post("/add/student", async (req, res) => {
             //const student = new Student({"id_student": infoServicio.id_student,"number_document": infoServicio.number_document,"type_document": '"'+infoServicio.type_document+'"',"name_student": '"'+infoServicio.name_student+'"',"lastname_student": '"'+infoServicio.lastname_student+'"',"code_student": infoServicio.code_student,"status": "true"});
             const student = new Student(infoServicio);
             console.log("Aqui se crea el estudiante:" + student);
-             res.status(200).json({
-                    code: 200,
-                    message: 'Saved Student' + await student.save(),
-                    details: 'Estudiante registrado: ' + infoServicio
-                });
+            res.status(200).json({
+                code: 200,
+                message: 'Saved Student' + await student.save(),
+                details: 'Estudiante registrado: ' + infoServicio
+            });
         } else {
             res.status(409).json({
-                    code: 409,
-                    message: 'El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado',
-                    details: 'Estudiante posiblemente esta registrado: ' + infoServicio
-                });
+                code: 409,
+                message: 'El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado',
+                details: 'Estudiante posiblemente esta registrado: ' + infoServicio
+            });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
-         res.status(500).json({
-                    code: 500,
-                    message: 'error:' + err,
-                    details: 'error Servidor no disponible '
-                });
+        res.status(500).json({
+            code: 500,
+            message: 'error:' + err,
+            details: 'error Servidor no disponible '
+        });
     }
 });
+
 /**
  ** function checkStudent:
  ** Verifica si un estudiante ya se encuentra registrado en la base de datos.
@@ -462,26 +467,26 @@ router.post("/add/subject/:id_subject/:name_subject/:code_subject/:quotas/:statu
             const subject = new Subject(infoServicio);
             console.log("Aqui se crea la Materia:" + subject);
             res.status(200).json({
-                    code: 200,
-                    message: 'Saved Subject' + await subject.save(),
-                    details: 'Estudiante registrado: ' + infoServicio
-                });
+                code: 200,
+                message: 'Saved Subject' + await subject.save(),
+                details: 'Estudiante registrado: ' + infoServicio
+            });
 
 
         } else {
-              res.status(409).json({
-                    code: 409,
-                    message: 'La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado',
-                    details: 'Materia posiblemente esta registrado: ' + infoServicio
-                });
+            res.status(409).json({
+                code: 409,
+                message: 'La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado',
+                details: 'Materia posiblemente esta registrado: ' + infoServicio
+            });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
-         res.status(500).json({
-                    code: 500,
-                    message: 'error:' + err,
-                    details: 'error Servidor no disponible '
-                });
+        res.status(500).json({
+            code: 500,
+            message: 'error:' + err,
+            details: 'error Servidor no disponible '
+        });
     }
 });
 /**
@@ -499,26 +504,27 @@ router.post("/add/subject", async (req, res) => {
             const subject = new Subject(infoServicio);
             console.log("Aqui se crea la Materia:" + subject);
             res.status(200).json({
-                    code: 200,
-                    message: 'Saved Subject' + await subject.save(),
-                    details: 'Estudiante registrado: ' + infoServicio
-                });
+                code: 200,
+                message: 'Saved Subject' + await subject.save(),
+                details: 'Estudiante registrado: ' + infoServicio
+            });
         } else {
-              res.status(409).json({
-                    code: 409,
-                    message: 'La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado',
-                    details: 'Materia posiblemente esta registrado: ' + infoServicio
-                });
+            res.status(409).json({
+                code: 409,
+                message: 'La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado',
+                details: 'Materia posiblemente esta registrado: ' + infoServicio
+            });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
-         res.status(500).json({
-                    code: 500,
-                    message: 'error:' + err,
-                    details: 'error Servidor no disponible '
-                });
+        res.status(500).json({
+            code: 500,
+            message: 'error:' + err,
+            details: 'error Servidor no disponible '
+        });
     }
 });
+
 /**
  ** function checkSubject:
  ** Verifica si una Materia ya se encuentra registrada en la base de datos.
@@ -560,13 +566,13 @@ router.post("/add/inscription/:id_inscription/:id_subject/:id_student", async (r
                     });
                 } else {
                     res.status(415).json({
-                    code: 415,
-                    message: 'Servidor se niega a recibir una petición por formato de carga',
-                    details: 'El Estutiante no existe: ' + infoServicio
-                });
+                        code: 415,
+                        message: 'Servidor se niega a recibir una petición por formato de carga',
+                        details: 'El Estutiante no existe: ' + infoServicio
+                    });
                 }
             } else {
-                 res.status(415).json({
+                res.status(415).json({
                     code: 415,
                     message: 'Servidor se niega a recibir una petición por formato de carga',
                     details: 'La materia no existe: ' + infoServicio
@@ -575,18 +581,18 @@ router.post("/add/inscription/:id_inscription/:id_subject/:id_student", async (r
 
         } else {
             res.status(409).json({
-                    code: 409,
-                    message: 'La Inscripcion ya se encuantra registrada o el id_inscription de la Inscripcion esta ya asignado',
-                    details: 'Inscripcion posiblemente esta registrada: ' + infoServicio
-                });
+                code: 409,
+                message: 'La Inscripcion ya se encuantra registrada o el id_inscription de la Inscripcion esta ya asignado',
+                details: 'Inscripcion posiblemente esta registrada: ' + infoServicio
+            });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
         res.status(500).json({
-                    code: 500,
-                    message: 'error:' + err,
-                    details: 'error Servidor no disponible '
-                });
+            code: 500,
+            message: 'error:' + err,
+            details: 'error Servidor no disponible '
+        });
     }
 });
 
@@ -613,13 +619,13 @@ router.post("/add/inscription", async (req, res) => {
                     });
                 } else {
                     res.status(415).json({
-                    code: 415,
-                    message: 'Servidor se niega a recibir una petición por formato de carga',
-                    details: 'El Estutiante no existe: ' + infoServicio
-                });
+                        code: 415,
+                        message: 'Servidor se niega a recibir una petición por formato de carga',
+                        details: 'El Estutiante no existe: ' + infoServicio
+                    });
                 }
             } else {
-                 res.status(415).json({
+                res.status(415).json({
                     code: 415,
                     message: 'Servidor se niega a recibir una petición por formato de carga',
                     details: 'La materia no existe: ' + infoServicio
@@ -628,18 +634,18 @@ router.post("/add/inscription", async (req, res) => {
 
         } else {
             res.status(409).json({
-                    code: 409,
-                    message: 'La Inscripcion ya se encuantra registrada o el id_inscription de la Inscripcion esta ya asignado',
-                    details: 'Inscripcion posiblemente esta registrada: ' + infoServicio
-                });
+                code: 409,
+                message: 'La Inscripcion ya se encuantra registrada o el id_inscription de la Inscripcion esta ya asignado',
+                details: 'Inscripcion posiblemente esta registrada: ' + infoServicio
+            });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
         res.status(500).json({
-                    code: 500,
-                    message: 'error:' + err,
-                    details: 'error Servidor no disponible '
-                });
+            code: 500,
+            message: 'error:' + err,
+            details: 'error Servidor no disponible '
+        });
     }
 });
 
@@ -698,21 +704,6 @@ function isStudent(inscription, listStudent) {
 }
 
 //--------------------------POST- END--------------------------------- //
-
-router.get('/getStudent', async (req, res) => {
-    const students = await Student.find();
-    let student = null;
-    students.forEach(function (element) {
-        console.log("---------------- Respueta del body: " + req.body);
-        if (req.body.id_student == element.id_student) {
-            student = element.toString();
-            res.status(200).send("Get Student" + student);
-        }
-    });
-    if (student == null) {
-        res.status(404).send("Estudiante no encontrado :(");
-    }
-});
 
 
 export default router;
