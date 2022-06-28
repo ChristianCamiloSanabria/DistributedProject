@@ -78,13 +78,13 @@ router.get('/getInscription/', async (req, res) => {
     const inscriptions = await Inscription.find();
     let inscription = null;
     let id_inscription = req.body.id_inscription;
-    inscriptions.forEach(function (element) {
+    inscriptions.forEach(function (element){
         if (id_inscription == element.id_inscription) {
             inscription = element.toString();
             res.status(200).json({
                 code: 200,
-                message: 'Inscripcion encontrada' + idInscription,
-                details: 'Incripcion: ' + element
+                message: 'Inscripcion encontrada',
+                details: 'Incripcion: ' + element.toString()
             });
         }
     });
