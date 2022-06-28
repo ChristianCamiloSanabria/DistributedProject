@@ -19,6 +19,8 @@ router.get('/showData', async (req, res) => {
     res.send("inscriptions" + inscriptions);
 });
 
+
+
 router.get('/', async (req, res) => {
     //Aqui estoy recogiendo los datos del servidor
     const tasks_db = await Task.find();
@@ -47,17 +49,14 @@ router.get("/show/last_saved_student", async (req, res) => {
  * Obtener datos de un estudiantes apartir de su numero de documento y tipo de documento
  */
 router.get('/getStudent/', async (req, res) => {
+    console.log(req.body);
     const students = await Student.find();
     let student = null;
     const paramForSearch = req.body.number_document + req.body.type_document;
     students.forEach(function (element) {
         if (paramForSearch == (element.number_document + element.type_document)) {
-            student = element;
-            res.status(200).json({
-                code: 200,
-                message: 'Estudiante encontrado',
-                details: 'Estudiante: ' + student
-            });
+            student = element.toString();
+            res.status(200).send("Get Student" + student);
         }
     });
     if (student == null) {
@@ -75,9 +74,9 @@ router.get('/getStudent/', async (req, res) => {
 router.get('/getInscription/', async (req, res) => {
     const inscriptions = await Inscription.find();
     let inscription = null;
-    const idInscription = req.body.id_inscription;
+    console.log(req.body.id_inscription);
     inscriptions.forEach(function (element) {
-        if (idInscription == element.id_inscription) {
+        if (req.body.id_inscription == element.id_inscription) {
             inscription = element.toString();
             res.status(200).json({
                 code: 200,
@@ -143,6 +142,7 @@ router.put('/put/subject/', async (req, res) => {
                 element.quota = req.body.quotes;
                 element.status = req.body.status;
                 console.log(element.toString());
+                res.status(201).send("Put: Update Subject");
                 newSubject = new Subject(element);
                 res.status(200).json({
                     code: 200,
@@ -179,6 +179,7 @@ router.put('/put/subject/', async (req, res) => {
 router.put('/put/student/', async (req, res) => {
     try {
         const listStudent = await Student.find();
+        let id_student = req.params.id_student;
         let newStudent = null;
         let paramForSearch = req.body.number_document + req.body.type_document;
         listStudent.forEach(function (element) {
@@ -252,7 +253,7 @@ router.put('put/inscription/', async (req, res) => {
             details: 'Error en la consulta: ' + error.toString()
         });
     }
-
+    res.status(201).send("Put: Update Inscription");
 });
 
 /***
@@ -267,37 +268,91 @@ router.put('put/inscription/', async (req, res) => {
 /***
  * Patch Student
  */
-router.patch("/patch/:idStudent/:status", async (req, res) => {
-    try {
-        const listStudents = await Student.find();
-        let idStudent = req.params.idStudent;
-        listStudents.forEach(function (element) {
-            if (element.id_student == idStudent) {
-                element.status = req.params.status;
-                res.status(200).send("status changed")
+router.patch("/patch/student/", async (req, res) => {
+    let body = req.body;
+    Student.updateOne({id_student: body.id_student}, {status: {tipo: body.status}},
+        function (error, info) {
+            if (error) {
+                res.json({
+                    code: 400,
+                    msg: 'Bad request'
+                });
+            } else if (info.matchedCount >= 1) {
+                res.json({
+                    code: 200,
+                    msg: 'status change',
+                    info: info
+                });
+            } else {
+                res.json({
+                    code: 404,
+                    msg: 'Not Found'
+                });
             }
-        });
-    } catch (error) {
+        }
+    );
 
-    }
 });
 /***
  * Patch Subject
+ * Actualiza el estado de una materia
  */
-router.patch("/patch/:id_subject/:status", async (req, res) => {
-    try {
-        const listSubject = await Subject.find();
-        let idSubject = req.params.id_subject;
-        listSubject.forEach(function (element) {
-            if (element.id_student == idSubject) {
-                element.status = req.params.status;
-                res.status(200).send("staus changed")
+router.patch("/patch/subject", async (req, res) => {
+    let body = req.body;
+    Subject.updateOne({id_subject: body.id_subject}, {status: {tipo: body.status}},
+        function (error, info) {
+            if (error) {
+                res.json({
+                    code: 400,
+                    msg: 'Bad request'
+                });
+            } else if (info.matchedCount >= 1) {
+                res.json({
+                    code: 200,
+                    msg: 'status change',
+                    info: info
+                });
+            } else {
+                res.json({
+                    code: 404,
+                    msg: 'Not Found'
+                });
             }
-        });
-    } catch (error) {
+        }
+    );
 
-    }
 });
+
+/***
+ * Patch Subject-quota
+ * Actualiza el numero de cupos de una materia
+ */
+
+router.patch("/patch/subject/quota", async (req, res) => {
+    let body = req.body;
+    Subject.updateOne({id_subject: body.id_subject}, {quotas: body.quota},
+        function (error, info) {
+            if (error) {
+                res.json({
+                    code: 400,
+                    msg: 'Bad request'
+                });
+            } else if (info.matchedCount >= 1) {
+                res.json({
+                    code: 200,
+                    msg: 'quota change',
+                    info: info
+                });
+            } else {
+                res.json({
+                    code: 404,
+                    msg: 'Not Found'
+                });
+            }
+        }
+    );
+});
+
 
 //-----------------------------END PATCH ------------------------
 
@@ -643,6 +698,21 @@ function isStudent(inscription, listStudent) {
 }
 
 //--------------------------POST- END--------------------------------- //
+
+router.get('/getStudent', async (req, res) => {
+    const students = await Student.find();
+    let student = null;
+    students.forEach(function (element) {
+        console.log("---------------- Respueta del body: " + req.body);
+        if (req.body.id_student == element.id_student) {
+            student = element.toString();
+            res.status(200).send("Get Student" + student);
+        }
+    });
+    if (student == null) {
+        res.status(404).send("Estudiante no encontrado :(");
+    }
+});
 
 
 export default router;

@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c52b65b6-5ba6-4375-be1b-29a3b4dc6602" name="Changes" comment="limpieza linea desarrollo" />
+    <list default="true" id="c52b65b6-5ba6-4375-be1b-29a3b4dc6602" name="Changes" comment="patch errors">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/services.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/services.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,7 +49,6 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;js.last.introduce.type&quot;: &quot;CONST&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Michael/WebstormProjects/Proyecto Sis DIS/src/schema&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -82,6 +84,11 @@
       <workItem from="1655649623166" duration="3604000" />
       <workItem from="1655747010730" duration="11461000" />
       <workItem from="1655824065203" duration="3478000" />
+      <workItem from="1656281400247" duration="1052000" />
+      <workItem from="1656283383353" duration="13698000" />
+      <workItem from="1656344818159" duration="15809000" />
+      <workItem from="1656362054926" duration="12507000" />
+      <workItem from="1656377464663" duration="4803000" />
     </task>
     <task id="LOCAL-00001" summary="Prueba para comprobar primer commit">
       <created>1655341007616</created>
@@ -161,6 +168,14 @@
       <updated>1656380867750</updated>
     </task>
     <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00010" summary="patch errors">
+      <created>1656346836887</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1656346836887</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,7 +202,8 @@
     <MESSAGE value="commit final Michael" />
     <MESSAGE value="correccion de errores" />
     <MESSAGE value="limpieza linea desarrollo" />
-    <option name="LAST_COMMIT_MESSAGE" value="limpieza linea desarrollo" />
+    <MESSAGE value="patch errors" />
+    <option name="LAST_COMMIT_MESSAGE" value="patch errors" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
