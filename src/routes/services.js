@@ -1,11 +1,10 @@
 import express from "express";
+
 const router = express.Router();
 
 import Student from "../schema/student.js";
 import Subject from "../schema/subject.js";
 import Inscription from "../schema/inscription.js";
-
-
 
 
 /**
@@ -17,13 +16,15 @@ router.get('/showData', async (req, res) => {
     const inscriptions = await Inscription.find();
     res.send("Students:" + students);
     res.send("subjects" + subjects);
-    res.send("inscriptions" + inscriptions);
+    res.send("inscriptions" + inscriptions)
+});
 
-router.get('/',async (req, res) => {
-	//Aqui estoy recogiendo los datos del servidor
-	const tasks_db = await Task.find();
-	console.log(tasks_db);
-	res.send("Hola");
+
+router.get('/', async (req, res) => {
+    //Aqui estoy recogiendo los datos del servidor
+    const tasks_db = await Task.find();
+    console.log(tasks_db);
+    res.send("Hola");
 
 });
 
@@ -85,7 +86,7 @@ router.get('/getSubject/', async (req, res) => {
     const subjects = await Subject.find();
     let subject = null;
     subjects.forEach(function (element) {
-        if (req.body.params.id_subject == element.id_subject) {
+        if (req.body.id_subject == element.id_subject) {
             subject = element.toString();
             res.status(200).send("Get subject" + subject);
         }
@@ -193,53 +194,101 @@ router.put('put/:id_inscription/:id_student/:id_subject', async (req, res) => {
  */
 
 
-
 /***
  * Servicios PATCH
  */
 
 /***
  * Patch Student
+ * Actualiza el estado de un estudiante
  */
-router.patch("/patch/:idStudent/:status", async (req, res) => {
-    try {
-        const listStudents = await Student.find();
-        let idStudent = req.params.idStudent;
-        listStudents.forEach(function (element) {
-            if (element.id_student == idStudent) {
-                element.status = req.params.status;
-                res.status(200).send("status changed")
+router.patch("/patch/student/", async (req, res) => {
+    let body = req.body;
+    Student.updateOne({id_student: body.id_student}, {status: {tipo: body.status}},
+        function (error, info) {
+            if (error) {
+                res.json({
+                    code: 400,
+                    msg: 'Bad request'
+                });
+            } else if (info.matchedCount >= 1) {
+                res.json({
+                    code: 200,
+                    msg: 'status change',
+                    info: info
+                });
+            } else {
+                res.json({
+                    code: 404,
+                    msg: 'Not Found'
+                });
             }
-        });
-    } catch (error){
-        res.status(400).send("Bad Request")
-    }
-    res.status(204).send("status changed")
+        }
+    );
+
 });
 /***
  * Patch Subject
+ * Actualiza el estado de una materia
  */
-router.patch("/patch/:id_subject/:status", async (req, res) => {
-    try {
-        const listSubject = await Subject.find();
-        let idSubject = req.params.id_subject;
-        listSubject.forEach(function (element) {
-            if (element.id_student == idSubject) {
-                element.status = req.params.status;
-                res.status(200).send("staus changed")
+router.patch("/patch/subject", async (req, res) => {
+    let body = req.body;
+    Subject.updateOne({id_subject: body.id_subject}, {status: {tipo: body.status}},
+        function (error, info) {
+            if (error) {
+                res.json({
+                    code: 400,
+                    msg: 'Bad request'
+                });
+            } else if (info.matchedCount >= 1) {
+                res.json({
+                    code: 200,
+                    msg: 'status change',
+                    info: info
+                });
+            } else {
+                res.json({
+                    code: 404,
+                    msg: 'Not Found'
+                });
             }
-        });
-    } catch (error) {
+        }
+    );
 
-    }
 });
 
+/***
+ * Patch Subject-quota
+ * Actualiza el numero de cupos de una materia
+ */
+
+router.patch("/patch/subject/quota", async (req, res) => {
+    let body = req.body;
+    Subject.updateOne({id_subject: body.id_subject}, {quotas: body.quota},
+        function (error, info) {
+            if (error) {
+                res.json({
+                    code: 400,
+                    msg: 'Bad request'
+                });
+            } else if (info.matchedCount >= 1) {
+                res.json({
+                    code: 200,
+                    msg: 'quota change',
+                    info: info
+                });
+            } else {
+                res.json({
+                    code: 404,
+                    msg: 'Not Found'
+                });
+            }
+        }
+    );
+});
+
+
 //-----------------------------END PATCH ------------------------
-
-
-
-
-
 
 
 //--------------------------POST---------------------------------- //
