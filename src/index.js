@@ -11,7 +11,7 @@ import bodyParser from "body-parser";
 //Se instancia el servidor para poder configurar
 const expressApp = createExpressServer();
 expressApp.use(bodyParser.urlencoded({
-    extended: false
+    extended: true
 }));
 
 //connecting to db
@@ -39,7 +39,6 @@ expressApp.use(createExpressServer.urlencoded({extended: false}));
 
 expressApp.listen(expressApp.get('port'), () => {
     console.log(`Server on port ${expressApp.get('port')}`);
-
     expressApp.use(
         createExpressServer.urlencoded({
             extended: true

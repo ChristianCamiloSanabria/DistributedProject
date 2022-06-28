@@ -44,16 +44,15 @@ router.get("/show/last_saved_student", async (req, res) => {
 });
 
 /***
- * Obtener datos de un estudiantes apartir de su ID
+ * Obtener datos de un estudiantes apartir de su numero de documento y tipo de documento
  */
 router.get('/getStudent/', async (req, res) => {
-    console.log(req.body);
     const students = await Student.find();
     let student = null;
-    const idStudent = req.body.id_student;
+    const paramForSearch = req.body.number_document + req.body.type_document;
     students.forEach(function (element) {
-        if (idStudent == element.id_student) {
-            student = element.toString();
+        if (paramForSearch == (element.number_document + element.type_document)) {
+            student = element;
             res.status(200).json({
                 code: 200,
                 message: 'Estudiante encontrado',
@@ -65,7 +64,7 @@ router.get('/getStudent/', async (req, res) => {
         res.status(404).json({
             code: 404,
             message: 'No se encuentra el estudiante',
-            details: 'El estudiante con el codigo: ' + idStudent + ' no se encuentra en la base de datos'
+            details: 'El estudiante con el codigo: ' + paramForSearch + ' no se encuentra en la base de datos'
         });
     }
 });
@@ -184,7 +183,6 @@ router.put('/put/student/', async (req, res) => {
         let paramForSearch = req.body.number_document + req.body.type_document;
         listStudent.forEach(function (element) {
             if ((element.number_document + element.type_document) == (paramForSearch)) {
-                element.number_document = req.body.number_document;
                 element.type_document = req.body.type_document;
                 element.name_student = req.body.name_student;
                 element.lastname_student = req.body.lastname_student;
@@ -194,7 +192,6 @@ router.put('/put/student/', async (req, res) => {
                     code: 200,
                     message: "Estudiante actualizado correctamente",
                     details: 'Estudiante actualizado ' + newStudent
-
                 });
             }
         });
