@@ -317,16 +317,63 @@ router.post("/add/student/:id_student/:number_document/:type_document/:name_stud
             //const student = new Student({"id_student": infoServicio.id_student,"number_document": infoServicio.number_document,"type_document": '"'+infoServicio.type_document+'"',"name_student": '"'+infoServicio.name_student+'"',"lastname_student": '"'+infoServicio.lastname_student+'"',"code_student": infoServicio.code_student,"status": "true"});
             const student = new Student(infoServicio);
             console.log("Aqui se crea el estudiante:" + student);
-            res.status(200).send("Post: Saved Student" + await student.save());
+             res.status(200).json({
+                    code: 200,
+                    message: 'Saved Student' + await student.save(),
+                    details: 'Estudiante registrado: ' + infoServicio
+                });
         } else {
-            res.status(200).send("El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado");
+            res.status(409).json({
+                    code: 409,
+                    message: 'El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado',
+                    details: 'Estudiante posiblemente esta registrado: ' + infoServicio
+                });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
         res.status(500).send("error"); //en caso de error respondemos al cliente con un 500
+         res.status(500).json({
+                    code: 500,
+                    message: 'error',
+                    details: 'error Servidor no disponible '
+                });
     }
 });
+/**
+ ** POST "/add/student"
+ ** Servicio de insertar a la DB un estudiante. Los parametros los recibe por el body
+ **/
 
+router.post("/add/student", async (req, res) => {
+    try {
+        const infoServicio = req.body;
+        console.log("Aqui llegan los parametros" + infoServicio);
+        const listStudent = await Student.find();
+        if (checkStudent(infoServicio, listStudent)) {
+            //const student = new Student({"id_student": infoServicio.id_student,"number_document": infoServicio.number_document,"type_document": '"'+infoServicio.type_document+'"',"name_student": '"'+infoServicio.name_student+'"',"lastname_student": '"'+infoServicio.lastname_student+'"',"code_student": infoServicio.code_student,"status": "true"});
+            const student = new Student(infoServicio);
+            console.log("Aqui se crea el estudiante:" + student);
+             res.status(200).json({
+                    code: 200,
+                    message: 'Saved Student' + await student.save(),
+                    details: 'Estudiante registrado: ' + infoServicio
+                });
+        } else {
+            res.status(409).json({
+                    code: 409,
+                    message: 'El estudiante ya se encuantra registrado o el codigo del estudiante ya se encuantra asignado',
+                    details: 'Estudiante posiblemente esta registrado: ' + infoServicio
+                });
+        }
+    } catch (err) {
+        console.error(err); //mostramos el error por consola para poder solucionar futuros errores
+         res.status(500).json({
+                    code: 500,
+                    message: 'error:' + err,
+                    details: 'error Servidor no disponible '
+                });
+    }
+});
 /**
  ** function checkStudent:
  ** Verifica si un estudiante ya se encuentra registrado en la base de datos.
@@ -359,16 +406,64 @@ router.post("/add/subject/:id_subject/:name_subject/:code_subject/:quotas/:statu
         if (checkSubject(infoServicio, listSubject)) {
             const subject = new Subject(infoServicio);
             console.log("Aqui se crea la Materia:" + subject);
-            res.status(200).send("Post: Saved Subject" + await subject.save());
+            res.status(200).json({
+                    code: 200,
+                    message: 'Saved Subject' + await subject.save(),
+                    details: 'Estudiante registrado: ' + infoServicio
+                });
+
+
         } else {
-            res.status(200).send("La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado");
+              res.status(409).json({
+                    code: 409,
+                    message: 'La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado',
+                    details: 'Materia posiblemente esta registrado: ' + infoServicio
+                });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
-        res.status(500).send("error"); //en caso de error respondemos al cliente con un 500
+         res.status(500).json({
+                    code: 500,
+                    message: 'error:' + err,
+                    details: 'error Servidor no disponible '
+                });
     }
 });
+/**
+ ** POST "/add/subject/
+ ** Parametros :id_subject/:name_subject/:code_subject/:quotas/:status"
+ ** Servicio de insertar a la DB una Materia.
+ **/
 
+router.post("/add/subject", async (req, res) => {
+    try {
+        const infoServicio = req.body;
+        console.log("Aqui llegan los parametros" + infoServicio);
+        const listSubject = await Subject.find();
+        if (checkSubject(infoServicio, listSubject)) {
+            const subject = new Subject(infoServicio);
+            console.log("Aqui se crea la Materia:" + subject);
+            res.status(200).json({
+                    code: 200,
+                    message: 'Saved Subject' + await subject.save(),
+                    details: 'Estudiante registrado: ' + infoServicio
+                });
+        } else {
+              res.status(409).json({
+                    code: 409,
+                    message: 'La Materia ya se encuantra registrada o el codigo de la materia esta ya asignado',
+                    details: 'Materia posiblemente esta registrado: ' + infoServicio
+                });
+        }
+    } catch (err) {
+        console.error(err); //mostramos el error por consola para poder solucionar futuros errores
+         res.status(500).json({
+                    code: 500,
+                    message: 'error:' + err,
+                    details: 'error Servidor no disponible '
+                });
+    }
+});
 /**
  ** function checkSubject:
  ** Verifica si una Materia ya se encuentra registrada en la base de datos.
@@ -403,20 +498,93 @@ router.post("/add/inscription/:id_inscription/:id_subject/:id_student", async (r
                 if (isStudent(infoServicio, await Student.find())) {
                     const inscription = new Inscription(infoServicio);
                     console.log("Aqui se crea la Inscripcion:" + inscription);
-                    res.status(200).send("Post: Saved Inscription" + await inscription.save());
+                    res.status(200).json({
+                        code: 200,
+                        message: 'Saved Inscription' + await inscription.save(),
+                        details: 'Inscription registrada: ' + infoServicio
+                    });
                 } else {
-                    res.status(200).send("El Estutiante no existe");
+                    res.status(415).json({
+                    code: 415,
+                    message: 'Servidor se niega a recibir una petición por formato de carga',
+                    details: 'El Estutiante no existe: ' + infoServicio
+                });
                 }
             } else {
-                res.status(200).send("La materia no existe");
+                 res.status(415).json({
+                    code: 415,
+                    message: 'Servidor se niega a recibir una petición por formato de carga',
+                    details: 'La materia no existe: ' + infoServicio
+                });
             }
 
         } else {
-            res.status(200).send("La Inscripcion ya se encuantra registrada o el id_inscription de la Inscripcion esta ya asignado");
+            res.status(409).json({
+                    code: 409,
+                    message: 'La Inscripcion ya se encuantra registrada o el id_inscription de la Inscripcion esta ya asignado',
+                    details: 'Inscripcion posiblemente esta registrada: ' + infoServicio
+                });
         }
     } catch (err) {
         console.error(err); //mostramos el error por consola para poder solucionar futuros errores
-        res.status(500).send("error"); //en caso de error respondemos al cliente con un 500
+        res.status(500).json({
+                    code: 500,
+                    message: 'error:' + err,
+                    details: 'error Servidor no disponible '
+                });
+    }
+});
+
+/**
+ ** POST "/add/inscription/
+ ** Parametros :id_inscription/:id_subject/:id_student"
+ ** Servicio de insertar a la DB una Inscripcion.
+ **/
+
+router.post("/add/inscription", async (req, res) => {
+    try {
+        const infoServicio = req.body;
+        console.log("Aqui llegan los parametros" + infoServicio);
+        const listInscription = await Inscription.find();
+        if (checkInscription(infoServicio, listInscription)) {
+            if (isSubject(infoServicio, await Subject.find())) {
+                if (isStudent(infoServicio, await Student.find())) {
+                    const inscription = new Inscription(infoServicio);
+                    console.log("Aqui se crea la Inscripcion:" + inscription);
+                    res.status(200).json({
+                        code: 200,
+                        message: 'Saved Inscription' + await inscription.save(),
+                        details: 'Inscription registrada: ' + infoServicio
+                    });
+                } else {
+                    res.status(415).json({
+                    code: 415,
+                    message: 'Servidor se niega a recibir una petición por formato de carga',
+                    details: 'El Estutiante no existe: ' + infoServicio
+                });
+                }
+            } else {
+                 res.status(415).json({
+                    code: 415,
+                    message: 'Servidor se niega a recibir una petición por formato de carga',
+                    details: 'La materia no existe: ' + infoServicio
+                });
+            }
+
+        } else {
+            res.status(409).json({
+                    code: 409,
+                    message: 'La Inscripcion ya se encuantra registrada o el id_inscription de la Inscripcion esta ya asignado',
+                    details: 'Inscripcion posiblemente esta registrada: ' + infoServicio
+                });
+        }
+    } catch (err) {
+        console.error(err); //mostramos el error por consola para poder solucionar futuros errores
+        res.status(500).json({
+                    code: 500,
+                    message: 'error:' + err,
+                    details: 'error Servidor no disponible '
+                });
     }
 });
 
